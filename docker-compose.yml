@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  jupyter:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-jupyter
+    container_name: jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./src:/home/jovyan/src
+    # env_file:
+    #   - .env
+    environment:
+      - JUPYTER_TOKEN=admin
+    restart: unless-stopped

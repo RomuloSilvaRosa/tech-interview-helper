@@ -1,0 +1,11 @@
+FROM jupyter/scipy-notebook
+ADD . /home/jovyan/work
+RUN for i in 1 2 3; do \
+        echo "Attempt $i installing requirements..." && \
+        pip install --upgrade -r notebooks/requirements.txt && break || \
+        echo "Retrying"; \
+    done
+
+
+# Build with:
+# docker build -t azure-agent .
