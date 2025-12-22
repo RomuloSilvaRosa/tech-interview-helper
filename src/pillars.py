@@ -49,12 +49,12 @@ def add_negative(i):
     )
 
 def generate_report(report):
-    md = "# Pillars\n\n"
+    md = "# Pillars\n"
 
     for r in report:
-        md += f"## {r['name']}\n\n"
-        # md += f"{r['description']}\n\n"
-        md += f"{r['grade']}/4\n\n"
+        md += f"## {r['name']}\n"
+        # md += f"{r['description']}\n"
+        md += f"{r['grade']}/4\n"
         md += f"\n{r['comments']}\n"
 
         pros = False
@@ -84,13 +84,13 @@ def generate_report(report):
         # comments =  or "No additional comments."
         
 
-        md += "\n---\n\n"
-    md += "## Notes\n\n"
+        md += "\n---\n"
+    md += "## Notes\n"
     other_notes_data = collect_other_notes()
     # print(other_notes_data)
     for key, value in other_notes_data.items():
         title = key.replace("_", " ").title()
-        md += f"### {title}\n{value}\n\n"
+        md += f"### {title}\n{value}\n"
     return md
 
 def render_characteristic(char, key_prefix, editable=False):
