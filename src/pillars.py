@@ -10,17 +10,17 @@ from pillars_models import (
 )
 
 '''TODO:
-- Add job description input (from greenhouse)
-- Add hour/time of generated report
-- Codeshare link url
-- Codeshare results
+- Add "about the candidate" to write down his pitch
+- Add (not) for pillars - Add didn't or not to the pillars instead of only prompted
 - Add questions to be asked:
-- Ask an llm to pre-generate questions based on the pillars / CV of the candidate - At [company name], why you did this or that?
-- Store questions in a json file
+    - Ask an llm to pre-generate questions based on the pillars / CV of the candidate - At [company name], why you did this or that?
+    - Store questions in a json file
 - Allow interviewer to add custom questions
 - Allow interviewer to rate candidate answers to questions - assess sincerity in the answers
 - Store all this data in the final report
-Verify inconsistencies between interviewer evaluations and Talent feedback
+- Add button to add question and answers
+- Make notes expandable
+- Verify inconsistencies between interviewer evaluations and Talent feedback
 '''
 
 import json
@@ -53,26 +53,36 @@ def generate_report(report):
 
     for r in report:
         md += f"## {r['name']}\n\n"
-        md += f"{r['description']}\n\n"
-        md += f"**Grade:** {r['grade']}/4\n\n"
+        # md += f"{r['description']}\n\n"
+        md += f"{r['grade']}/4\n\n"
+        md += f"\n{r['comments']}\n"
 
-        md += "**Positive:**\n"
-        if r["positive"]:
+        pros = False
+        cons = False
+        if len(r["positive"]):
+           
             for x in r["positive"]:
                 if x.checked:
-                    md += f"\n(+) {str(x)}\n"
-        else:
-            md += "- None\n"
+                    if not pros:
+                        md += "**Pros:**\n"
+                        pros = True
+                    md += f"\n(+) {str(x)}"
+        # else:
+        #     md += "- None\n"
 
-        md += "\n**Negative:**\n"
-        if r["negative"]:
+        
+        if len(r["negative"]):
+            
             for x in r["negative"]:
                 if x.checked:
+                    if not cons:
+                        md += "\n**Cons:**\n"
+                        cons = True
                     md += f"\n(-) {str(x)}\n"
-        else:
-            md += "- None\n"
-        comments = r['comments'] or "No additional comments."
-        md += f"\n**Overall interviewer notes:**\n{comments}\n"
+        # else:
+        #     md += "- None\n"
+        # comments =  or "No additional comments."
+        
 
         md += "\n---\n\n"
     md += "## Notes\n\n"

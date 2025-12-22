@@ -11,11 +11,13 @@ class PillarCharacteristic:
     checked: bool = False
 
     def __str__(self):
-        prompted_part = "Prompted" if self.prompted else "Spontaneous"
+        prompted_part = ("Prompted") if self.prompted else ""
         polarity = "Positive" if self.positive else "Negative"
+        additional = ""
+        if self.additional_commentary:
+            additional = f"- {self.additional_commentary}"
         return (
-            f"{self.description} ({prompted_part})\n"
-            f"\n{self.additional_commentary}"
+            f"{self.description} {prompted_part} {additional}"
         )
 
 @dataclass
@@ -33,7 +35,7 @@ class Pillars:
     shorten: str
     positive: List[PositivePillarCharacteristic] = field(default_factory=list)
     negative: List[NegativePillarCharacteristic] = field(default_factory=list)
-    grade: int | None = None
+    grade: int  = None
     added_comments: str = ""
 
 _mand = [ "BA", "AC", "CBP", "COM", "CT", "EP", "CF"]
@@ -95,7 +97,13 @@ PILLARS = [
     Pillars(
         name="Modeling & Evaluation",
         shorten="ME",
-        description="Understanding of ML algorithms, evaluation metrics, and model improvement strategies.",
+        description="""Understanding of ML algorithms, evaluation metrics, and model improvement strategies.\n
+Evaluates the candidate's ability to solve algorithmic coding problems, focusing on their problem-solving approach, efficiency (time/space complexity), and ability to articulate their thought process. Mandatory for MLE and MLOps roles, here’s the recommended rationale: 
+Solved the problem optimally with no help: 4/4
+Solved the problem optimally with help: 3/4
+Solved the problem with brute force: 2/4
+Did not solve the problem: 1/4
+""",
         positive=[
             PositivePillarCharacteristic(description="Explains supervised, unsupervised, and reinforcement learning"),
             PositivePillarCharacteristic(description="Understands bias-variance tradeoff"),
