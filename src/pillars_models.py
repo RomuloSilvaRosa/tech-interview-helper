@@ -9,6 +9,9 @@ class PillarCharacteristic:
     additional_commentary: str = ""
     prompted: bool = False
     checked: bool = False
+    didnt_modifier: bool = False
+    comment: bool = False
+    
 
     def __str__(self):
         prompted_part = ("Prompted") if self.prompted else ""
@@ -37,8 +40,17 @@ class Pillars:
     negative: List[NegativePillarCharacteristic] = field(default_factory=list)
     grade: int  = None
     added_comments: str = ""
+    def __post_init__(self):
+        self.positive = sorted(
+            self.positive,
+            key=lambda c: c.description.lower()
+        )
+        self.negative =     sorted(
+            self.negative,
+            key=lambda c: c.description.lower()
+        )
 
-_mand = [ "BA", "AC", "CBP", "COM", "CT", "EP", "CF"]
+_mand = [ "BA", "AC", "CBP", "COM", "CT", "EP", "CF", "SR"]
 MANDATORY_PILLARS ={ "MLE": ["ME", "PD", "MM"] + _mand, "MLOps": ["COM", "CT", "EP", "CF"] + _mand, "DS": ["EDA", "ME", "PD", "MM"] + _mand,}
 CANDIDATE_TYPES = list(MANDATORY_PILLARS)
 MOCK_PILLARS = [    
@@ -302,5 +314,152 @@ Did not solve the problem: 1/4
             PositivePillarCharacteristic(description="Deliver Rigor and Excellence, Don’t Be Mediocre."),
             PositivePillarCharacteristic(description="Execution-Focused Meritocracy."),
         ],
-    )
+    ),
+    Pillars(
+    name="Seniority",
+    shorten="SR",
+    description="Assesses the candidate’s seniority level based on experience, problem framing, execution style, handling of ambiguity, system thinking, business awareness, and communication maturity.",
+    positive=[
+        # LEVEL I — JUNIOR
+        PositivePillarCharacteristic(
+            description="Level I – Experience (1–3 years): Early-career engineer focused on learning fundamentals and executing well-defined tasks with guidance."
+        ),
+        PositivePillarCharacteristic(
+            description="Level I – Focus on the What: Prioritizes delivering the correct answer to the question asked rather than exploring alternatives or implications."
+        ),
+        PositivePillarCharacteristic(
+            description="Level I – Seeks Concrete Answers: Most comfortable with factual, closed-ended questions; struggles with ambiguity and ill-defined problems."
+        ),
+        PositivePillarCharacteristic(
+            description="Level I – Execution-Oriented: Jumps directly into implementation without significant problem reframing or validation."
+        ),
+        PositivePillarCharacteristic(
+            description="Level I – Theory Handling: Can provide textbook definitions (e.g., bias and variance) but struggles to contextualize them in real-world scenarios."
+        ),
+        PositivePillarCharacteristic(
+            description="Level I – Open-Ended Questions: Tends to propose the first solution that comes to mind and may get stuck if it is not viable."
+        ),
+        PositivePillarCharacteristic(
+            description="Level I – Coding Approach: Writes functional code for the happy path but may overlook edge cases, efficiency, or structure."
+        ),
+        PositivePillarCharacteristic(
+            description="Level I – Technical Expertise: Developing; understands concepts but lacks depth from real-world experience."
+        ),
+        PositivePillarCharacteristic(
+            description="Level I – Critical Thinking: Relies on known patterns and struggles with novel or ambiguous problems."
+        ),
+        PositivePillarCharacteristic(
+            description="Level I – Business Acumen: Low; describes work in terms of tasks completed rather than business impact."
+        ),
+        PositivePillarCharacteristic(
+            description="Level I – Communication: Explains what was done but often lacks the strategic why behind decisions."
+        ),
+
+        # LEVEL II — MID-LEVEL
+        PositivePillarCharacteristic(
+            description="Level II – Experience (3–5 years): Reliable and independent contributor capable of owning well-scoped tasks end to end."
+        ),
+        PositivePillarCharacteristic(
+            description="Level II – Focus on the How: Goes beyond the final answer to explain how a solution would be implemented."
+        ),
+        PositivePillarCharacteristic(
+            description="Level II – Developing Awareness: Recognizes trade-offs and can discuss basic alternatives based on prior experience."
+        ),
+        PositivePillarCharacteristic(
+            description="Level II – Task Ownership: Can be trusted to deliver multiple tasks and knows when to ask for help."
+        ),
+        PositivePillarCharacteristic(
+            description="Level II – Theory Handling: Provides correct answers and adds practical context (e.g., multiple techniques for class imbalance and which were used before)."
+        ),
+        PositivePillarCharacteristic(
+            description="Level II – Open-Ended Questions: Breaks problems into manageable parts and proposes logical solutions, sometimes needing prompting to explore more options."
+        ),
+        PositivePillarCharacteristic(
+            description="Level II – Coding Approach: Writes clean, well-structured code, considers some edge cases, and can analyze time and space complexity."
+        ),
+        PositivePillarCharacteristic(
+            description="Level II – Technical Expertise: Solid command of core tools and concepts."
+        ),
+        PositivePillarCharacteristic(
+            description="Level II – Critical Thinking: Strong within well-defined problem spaces."
+        ),
+        PositivePillarCharacteristic(
+            description="Level II – Business Acumen: Growing; understands how their work impacts project goals."
+        ),
+        PositivePillarCharacteristic(
+            description="Level II – Communication: Clear and concise; effectively explains thought process and technical decisions."
+        ),
+
+        # LEVEL III — MID-SENIOR
+        PositivePillarCharacteristic(
+            description="Level III – Experience (5–7 years): Comfortable leading the technical direction of projects and working effectively under ambiguity."
+        ),
+        PositivePillarCharacteristic(
+            description="Level III – Focus on the Why: Naturally connects technical decisions to underlying reasons and business goals."
+        ),
+        PositivePillarCharacteristic(
+            description="Level III – Problem Framing: Asks clarifying questions to ensure the right problem is being solved before implementation."
+        ),
+        PositivePillarCharacteristic(
+            description="Level III – System-Level Thinking: Considers scalability, monitoring, maintenance, and architectural fit."
+        ),
+        PositivePillarCharacteristic(
+            description="Level III – Theory Handling: Uses theoretical questions as a starting point to discuss trade-offs grounded in experience."
+        ),
+        PositivePillarCharacteristic(
+            description="Level III – Open-Ended Questions: Systematically deconstructs ambiguity, compares multiple viable solutions, and justifies decisions using clear criteria."
+        ),
+        PositivePillarCharacteristic(
+            description="Level III – Coding Approach: Designs robust solutions first, considering validation, error handling, efficiency, and maintainability."
+        ),
+        PositivePillarCharacteristic(
+            description="Level III – Technical Expertise: High depth and breadth of knowledge."
+        ),
+        PositivePillarCharacteristic(
+            description="Level III – Critical Thinking: Excellent ability to navigate and resolve ambiguity independently."
+        ),
+        PositivePillarCharacteristic(
+            description="Level III – Business Acumen: Frames technical choices in terms of business impact, cost, speed, and value."
+        ),
+        PositivePillarCharacteristic(
+            description="Level III – Communication: Structured, persuasive, and well-tailored to the audience."
+        ),
+
+        # SENIOR+
+        PositivePillarCharacteristic(
+            description="Senior+ – Experience (7+ years): Strategic engineer capable of leading teams and complex, cross-functional initiatives."
+        ),
+        PositivePillarCharacteristic(
+            description="Senior+ – Focus on Who and When: Considers team composition, long-term ownership, sequencing of work, and organizational impact."
+        ),
+        PositivePillarCharacteristic(
+            description="Senior+ – Challenges Assumptions: Respectfully reframes questions to maximize impact and alignment with business goals."
+        ),
+        PositivePillarCharacteristic(
+            description="Senior+ – Strategic & Mentoring Mindset: Demonstrates ownership beyond technical delivery, focusing on team and business success."
+        ),
+        PositivePillarCharacteristic(
+            description="Senior+ – Theory Handling: Uses questions as teaching moments, simplifying complex concepts with deep mastery."
+        ),
+        PositivePillarCharacteristic(
+            description="Senior+ – Open-Ended Questions: Elevates discussions to include risks, operational costs, team skills, and long-term strategy."
+        ),
+        PositivePillarCharacteristic(
+            description="Senior+ – Coding Approach: Focuses on architectural patterns and principles, discussing generalization and long-term precedents."
+        ),
+        PositivePillarCharacteristic(
+            description="Senior+ – Technical Expertise: Very high; often a go-to expert in one or more domains."
+        ),
+        PositivePillarCharacteristic(
+            description="Senior+ – Critical Thinking: Exceptional strategic and product-oriented reasoning."
+        ),
+        PositivePillarCharacteristic(
+            description="Senior+ – Business Acumen: Thinks like a business owner and translates seamlessly between technical and business strategy."
+        ),
+        PositivePillarCharacteristic(
+            description="Senior+ – Communication: Highly influential communicator who aligns and persuades stakeholders at all levels."
+        ),
+    ],
+)
+
 ]

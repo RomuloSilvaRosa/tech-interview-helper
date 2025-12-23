@@ -11,16 +11,16 @@ from pillars_models import (
 
 '''TODO:
 - Add "about the candidate" to write down his pitch
-- Add (not) for pillars - Add didn't or not to the pillars instead of only prompted
 - Add questions to be asked:
     - Ask an llm to pre-generate questions based on the pillars / CV of the candidate - At [company name], why you did this or that?
     - Store questions in a json file
 - Allow interviewer to add custom questions
 - Allow interviewer to rate candidate answers to questions - assess sincerity in the answers
-- Store all this data in the final report
+- Store all data in the final report
 - Add button to add question and answers
 - Make notes expandable
 - Verify inconsistencies between interviewer evaluations and Talent feedback
+- Store all new characteristics added by interviewer in a json file for future use
 '''
 
 import json
@@ -57,31 +57,38 @@ def generate_report(report):
         md += f"{r['grade']}/4\n"
         md += f"\n{r['comments']}\n"
 
-        pros = False
         cons = False
-        if len(r["positive"]):
-           
-            for x in r["positive"]:
-                if x.checked:
-                    if not pros:
-                        md += "**Pros:**\n"
-                        pros = True
-                    md += f"\n(+) {str(x)}"
-        # else:
-        #     md += "- None\n"
+        all_positives = []
+        all_negatives = []
+
+        for x in r["positive"]:
+            if x.didnt_modifier:
+                all_negatives.append("(NOT) " + str(x))
+            elif x.checked:
+                if x.positive:
+                    all_positives.append(str(x))
+                else:
+                    all_negatives.append(str(x))
+                      
 
         
-        if len(r["negative"]):
-            
-            for x in r["negative"]:
-                if x.checked:
-                    if not cons:
-                        md += "\n**Cons:**\n"
-                        cons = True
-                    md += f"\n(-) {str(x)}\n"
-        # else:
-        #     md += "- None\n"
-        # comments =  or "No additional comments."
+
+        for x in r["negative"]:
+            if x.didnt_modifier:
+                all_positives.append("(NOT) " + str(x))
+            elif x.checked:
+                if x.positive:
+                    all_positives.append(str(x))
+                else:
+                    all_negatives.append(str(x))
+        if all_positives:
+            md += "\nPros:\n"
+            for x in set(all_positives):
+                md += f"\n(+) {str(x)}\n"
+        if all_negatives:
+            md += "\nCons:\n"
+            for x in set(all_negatives):
+                md += f"\n(-) {str(x)}\n"
         
 
         md += "\n---\n"
@@ -116,17 +123,26 @@ def render_characteristic(char, key_prefix, editable=False):
 
     with col_prompted:
         char.prompted = st.checkbox(
-            "Prompted",
+            "Prompted?",
             value=char.prompted,
             key=f"{key_prefix}_prompted"
         )
-
     with col_add:
-        if checked:
-            # if st.button("Add comment", key=f"{key_prefix}_add_comment"):
-            st.session_state[f"{key_prefix}_show_comment"] = True
+        char.didnt_modifier = st.checkbox(
+            "(NOT)",
+            value=char.didnt_modifier,
+            key=f"{key_prefix}_didnt"
+        )
+    # with col_comment:    
+    #     char.comment = st.checkbox(
+    #         "+ Comment",
+    #         value=char.comment,
+    #         key=f"{key_prefix}_comment"
+    #     )
+    # if char.comment:
+    #     checked = True
     char.checked = checked
-    if checked and st.session_state.get(f"{key_prefix}_show_comment", False):
+    if checked:
         char.additional_commentary = st.text_area(
             "How it was evaluated (Optional)",
             value=char.additional_commentary,
@@ -193,9 +209,12 @@ def pillars_page():
 
         with st.expander(pillar.name + (" (Mandatory)" if expanded else ""), expanded=expanded):
             st.markdown(pillar.description)
-
+            negative_md = "### Negative"
             col_pos, col_neg = st.columns([7, 7])
-
+            if not pillar.negative:
+                pillar.negative = pillar.positive[len(pillar.positive)//2:]
+                pillar.positive = pillar.positive[:len(pillar.positive)//2]
+                negative_md = ""
             with col_pos:
                 st.markdown("### Positive")
                 positives = []
@@ -218,7 +237,7 @@ def pillars_page():
                 )
 
             with col_neg:
-                st.markdown("### Negative")
+                st.markdown(negative_md)
                 negatives = []
 
                 for j, n in enumerate(pillar.negative):
