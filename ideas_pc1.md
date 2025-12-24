@@ -1,0 +1,2 @@
+- fazer um json com as perguntas para cada topico, deixar as perguntas colapsadas
+- sugerir grade para monitoring - com practica e teoria
